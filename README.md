@@ -3,7 +3,6 @@
 ## 📑 Table of Contents
 - [📖 Overview](#-overview)
 - [🏗️ Stack](#️-stack)
-- [⚙️ Docker Image](#️-docker-image)
 - [🚀 Jenkins CI/CD Pipeline](#-jenkins-cicd-pipeline)
 - [📊 Zabbix Monitoring](#-zabbix-monitoring)
 - [📸 Screenshots](#-screenshots)
