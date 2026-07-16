@@ -1,0 +1,16 @@
+node_modules
+.git
+.gitignore
+test
+scripts
+k8s
+README.md
+Dockerfile
+.dockerignore
+*.tsx
+vite.config.ts
+tsconfig*.json
+eslint.config.js
+postcss.config.js
+tailwind.config.js
+index.html
