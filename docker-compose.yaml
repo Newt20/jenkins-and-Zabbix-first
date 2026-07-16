@@ -1,0 +1,52 @@
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:alpine-6.4-latest
+    restart: unless-stopped
+    ports:
+      - "10051:10051"
+    environment:
+      DB_SERVER_HOST: postgres-server
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix_pwd
+    depends_on:
+      - postgres-server
+
+  postgres-server:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix_pwd
+      POSTGRES_DB: zabbix
+    volumes:
+      - zabbix-db-data:/var/lib/postgresql/data
+
+  zabbix-web:
+    image: zabbix/zabbix-web-apache-pgsql:alpine-6.4-latest
+    restart: unless-stopped
+    ports:
+      - "8088:8080" # Using 8088 to avoid conflict with Jenkins on 8080
+    environment:
+      DB_SERVER_HOST: postgres-server
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix_pwd
+      ZBX_SERVER_HOST: zabbix-server
+    depends_on:
+      - zabbix-server
+      - postgres-server
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:alpine-6.4-latest
+    restart: unless-stopped
+    privileged: true
+    # pid: host lets the agent read the EC2 host's /proc, so CPU and
+    # memory items report the machine's metrics, not the container's
+    pid: "host"
+    environment:
+      ZBX_SERVER_HOST: "zabbix-server"
+      ZBX_HOSTNAME: "EC2-Instance"
+    depends_on:
+      - zabbix-server
+
+volumes:
+  zabbix-db-data:
